@@ -15,7 +15,7 @@ public class ChangeColorSystem : ComponentSystem
             renderMesh.material = GetMaterial(GetColor(clickCount.Count));
             EntityManager.SetSharedComponentData(entity, renderMesh);
 
-            EntityManager.RemoveComponent<ChangeColorEvent>(entity);
+            PostUpdateCommands.RemoveComponent<ChangeColorEvent>(entity);
         });
     }
 

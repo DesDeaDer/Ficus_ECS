@@ -8,19 +8,18 @@ public class EndDragSystem : ComponentSystem
 
     protected override void OnUpdate()
     {
-        Entities.WithAll<Follow>().ForEach((Entity entity, RenderMesh renderMesh, ref ClickCount clickCount, ref Follow follow) =>
+        var isMouseUp = Input.GetMouseButtonUp(0);
+        if (isMouseUp)
         {
-            var isMouseUp = Input.GetMouseButtonUp(0);
-
-            if (isMouseUp)
+            Entities.WithAll<Follow>().ForEach((Entity entity, RenderMesh renderMesh, ref ClickCount clickCount, ref Follow follow) =>
             {
                 if (follow.DragDistance < DISTANCE_COLOR_CHANGE)
                 {
                     EntityManager.AddComponent<ChangeColorEvent>(entity);
                 }
 
-                EntityManager.RemoveComponent<Follow>(entity);
-            }
-        });
+                PostUpdateCommands.RemoveComponent<Follow>(entity);
+            });
+        }
     }
 }

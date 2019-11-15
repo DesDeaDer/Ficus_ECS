@@ -16,24 +16,25 @@ public class BeginDragSystem : ComponentSystem
     protected override void OnUpdate()
     {
         var mousePosition = (float3)MousePosition;
-        Entities.ForEach((Entity entity, RenderMesh renderMesh, ref Translation translation, ref ClickCount clickCount) =>
+        var isMouseDown = Input.GetMouseButtonDown(0);
+        if (isMouseDown)
         {
-            var isMouseDown = Input.GetMouseButtonDown(0);
-            if (isMouseDown)
+            Entities.ForEach((Entity entity, RenderMesh renderMesh, ref Translation translation, ref ClickCount clickCount) =>
             {
+
                 var distance = math.distance(mousePosition.xy, translation.Value.xy);
                 var isDetection = distance < SIZE_DETECTION;
                 if (isDetection)
                 {
                     ++clickCount.Count;
 
-                    EntityManager.AddComponent<Follow>(entity);
+                    PostUpdateCommands.AddComponent<Follow>(entity);
 
                     var offset = mousePosition.xy - translation.Value.xy;
 
-                    EntityManager.SetComponentData(entity, new Follow() { Offset = new float3(offset.x, offset.y, 0) });
+                    PostUpdateCommands.SetComponent(entity, new Follow() { Offset = new float3(offset.x, offset.y, 0) });
                 }
-            }
-        });
+            });
+        }
     }
 }
